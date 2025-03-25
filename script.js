@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Variables for touch/drag functionality
         let isDragging = false;
         let startPos = 0;
+        let startTime = 0;
         let currentTranslate = 0;
         let prevTranslate = 0;
-        let animationID = null;
         let currentIndex = 0;
         
         // Calculate the width of each item including margin
@@ -141,11 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset any existing transform
         carousel.style.transform = 'translateX(0)';
+        carousel.style.transition = 'none';
         
-        // Stop the auto scroll from the original code
-        carousel.style.transition = 'transform 0.3s ease-out';
-        
-        // Disable the existing auto-scroll functions from the original code
+        // Disable the existing auto-scroll functions
         if (window.autoScroll) {
             cancelAnimationFrame(window.autoScroll);
         }
@@ -157,20 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
         prevBtn.addEventListener('click', () => {
             if (currentIndex > 0) {
                 currentIndex--;
-                setPositionByIndex();
+                setPositionByIndex(true);
             }
         });
         
         nextBtn.addEventListener('click', () => {
             if (currentIndex < maxIndex) {
                 currentIndex++;
-                setPositionByIndex();
+                setPositionByIndex(true);
             }
         });
         
-        // Touch events
-        carousel.addEventListener('touchstart', touchStart);
-        carousel.addEventListener('touchmove', touchMove);
+        // Touch events with passive option for better performance
+        carousel.addEventListener('touchstart', touchStart, { passive: true });
+        carousel.addEventListener('touchmove', touchMove, { passive: false });
         carousel.addEventListener('touchend', touchEnd);
         
         // Mouse events
@@ -188,10 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 : event.touches[0];
                 
             startPos = touch.clientX;
+            startTime = Date.now(); // Track when the touch started
             isDragging = true;
             
-            // Stop any running animation
-            cancelAnimationFrame(animationID);
+            // Remove transition for immediate response
+            carousel.style.transition = 'none';
             
             // Store the current position
             prevTranslate = currentTranslate;
@@ -200,6 +199,11 @@ document.addEventListener('DOMContentLoaded', function() {
         function touchMove(event) {
             if (!isDragging) return;
             
+            // Prevent page scrolling when swiping the carousel
+            if (!event.type.includes('mouse')) {
+                event.preventDefault();
+            }
+            
             const touch = event.type.includes('mouse') 
                 ? event 
                 : event.touches[0];
@@ -207,33 +211,73 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentPosition = touch.clientX;
             const diff = currentPosition - startPos;
             
-            // Calculate new position with boundaries
-            currentTranslate = prevTranslate + diff;
+            // Calculate new position with boundaries and add some resistance at the edges
+            if ((currentIndex === 0 && diff > 0) || (currentIndex === maxIndex && diff < 0)) {
+                // Add resistance at the edges (divide by 3 for less movement)
+                currentTranslate = prevTranslate + (diff / 3);
+            } else {
+                currentTranslate = prevTranslate + diff;
+            }
             
-            // Apply transform
-            setTransform();
+            // Apply transform without transition for immediate feedback
+            setTransform(false);
         }
         
         function touchEnd() {
+            if (!isDragging) return;
             isDragging = false;
             
-            // Snap to closest item
+            // Calculate swipe duration and distance
+            const touchDuration = Date.now() - startTime;
             const movedBy = currentTranslate - prevTranslate;
             
-            // If moved significantly, move to next/prev item
-            if (movedBy < -100 && currentIndex < maxIndex) {
+            // If it was a quick, significant swipe, move multiple items
+            if (touchDuration < 300 && Math.abs(movedBy) > 50) {
+                const direction = movedBy < 0 ? 1 : -1;
+                const moveCount = Math.min(
+                    Math.max(1, Math.floor(Math.abs(movedBy) / 100)), 
+                    direction > 0 ? maxIndex - currentIndex : currentIndex
+                );
+                
+                currentIndex += direction * moveCount;
+                
+                // Ensure within bounds
+                if (currentIndex < 0) currentIndex = 0;
+                if (currentIndex > maxIndex) currentIndex = maxIndex;
+                
+                setPositionByIndex(true);
+                return;
+            }
+            
+            // For slower movements, check distance threshold
+            if (movedBy < -50 && currentIndex < maxIndex) {
                 currentIndex++;
-            } else if (movedBy > 100 && currentIndex > 0) {
+            } else if (movedBy > 50 && currentIndex > 0) {
                 currentIndex--;
             }
             
-            setPositionByIndex();
+            // Always animate when returning to position
+            setPositionByIndex(true);
         }
         
-        function setPositionByIndex() {
+        function setPositionByIndex(animate = false) {
             currentTranslate = currentIndex * -itemWidth;
-            setTransform();
+            
+            if (animate) {
+                carousel.style.transition = 'transform 0.3s ease-out';
+            } else {
+                carousel.style.transition = 'none';
+            }
+            
+            setTransform(animate);
             updateDots();
+            
+            // Reset transition after animation completes
+            if (animate) {
+                setTimeout(() => {
+                    carousel.style.transition = 'none';
+                }, 300);
+            }
         }
         
         function setTransform() {
@@ -261,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             dot.addEventListener('click', () => {
                 currentIndex = Math.min(i * visibleItems, maxIndex);
-                setPositionByIndex();
+                setPositionByIndex(true);
             });
             
             dotsContainer.appendChild(dot);
@@ -282,16 +326,42 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Window resize handler
-        window.addEventListener('resize', () => {
-            // Recalculate values on window resize
-            const newVisibleItems = Math.floor(container.offsetWidth / itemWidth);
-            const newMaxIndex = Math.max(0, items.length - newVisibleItems);
+        // Add touch hint for mobile devices
+        if ('ontouchstart' in window) {
+            const hintElement = document.createElement('div');
+            hintElement.className = 'swipe-hint';
+            hintElement.innerHTML = '← Swipe →';
+            container.appendChild(hintElement);
             
-            if (currentIndex > newMaxIndex) {
-                currentIndex = newMaxIndex;
-                setPositionByIndex();
-            }
+            // Remove the hint after first interaction
+            const removeHint = () => {
+                hintElement.style.opacity = '0';
+                setTimeout(() => {
+                    hintElement.remove();
+                }, 300);
+                carousel.removeEventListener('touchstart', removeHint);
+            };
+            
+            carousel.addEventListener('touchstart', removeHint);
+            
+            // Or remove after 5 seconds
+            setTimeout(removeHint, 5000);
+        }
+        
+        // Window resize handler with debounce
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Recalculate values on window resize
+                const newVisibleItems = Math.floor(container.offsetWidth / itemWidth);
+                const newMaxIndex = Math.max(0, items.length - newVisibleItems);
+                
+                if (currentIndex > newMaxIndex) {
+                    currentIndex = newMaxIndex;
+                    setPositionByIndex(true);
+                }
+            }, 100);
         });
     }
 });

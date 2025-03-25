@@ -190,17 +190,37 @@ nav.scrolled {
     line-height: 1.6;
 }
 
-/* Image Carousel */
-.carousel-container {
+/* About Section */
+#about {
+    text-align: center;
+    padding: 60px 5%;
+}
+
+#about p {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Image Carousel - Enhanced for mobile */
+.carousel-container, .testimonials-container {
     position: relative;
     overflow: hidden;
     padding: 20px 50px;
+    touch-action: pan-y; /* Allow vertical scrolling but handle horizontal ourselves */
 }
 
-.carousel {
+.carousel, .testimonials {
     display: flex;
-    transition: transform 0.3s ease-out;
     gap: 15px;
+    cursor: grab;
+    will-change: transform; /* Performance optimization */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.carousel:active, .testimonials:active {
+    cursor: grabbing;
 }
 
 .carousel-item {
@@ -211,6 +231,9 @@ nav.scrolled {
     transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    touch-action: none; /* Disable browser handling of all panning and zooming gestures */
 }
 
 .carousel-item:hover {
@@ -277,14 +300,21 @@ nav.scrolled {
     background-color: var(--primary-blue);
 }
 
-/* Make carousel items better for touch */
-.carousel, .testimonials {
-    cursor: grab;
-    user-select: none;
-}
-
-.carousel:active, .testimonials:active {
-    cursor: grabbing;
+/* Swipe hint */
+.swipe-hint {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    z-index: 10;
 }
 
 /* Statistics Section */
@@ -308,6 +338,7 @@ nav.scrolled {
     margin-right: 10px;
 }
 
+/* Style for the plus sign */
 .counter-container div {
     font-size: 60px;  /* Increased from default size */
     font-weight: 700; /* Making it bold to match the counter */
@@ -333,18 +364,6 @@ nav.scrolled {
     margin-bottom: 40px;
 }
 
-.testimonials-container {
-    position: relative;
-    overflow: hidden;
-    padding: 20px 50px;
-}
-
-.testimonials {
-    display: flex;
-    transition: transform 0.3s ease-out;
-    gap: 20px;
-}
-
 .testimonial-card {
     min-width: 300px;
     background-color: white;
@@ -353,6 +372,8 @@ nav.scrolled {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
 .stars {
@@ -510,13 +531,44 @@ footer {
     animation: slideFromRight 1s forwards;
 }
 
-#about {
-    text-align: center;
-    padding: 60px 5%;
-}
-
-#about p {
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.6;
+/* Larger touch targets for navigation buttons on mobile */
+@media (max-width: 768px) {
+    .carousel-nav {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+    
+    .carousel-dot {
+        width: 12px;
+        height: 12px;
+        margin: 0 6px;
+    }
+    
+    /* Add space between carousel items on mobile */
+    .carousel-item, .testimonial-card {
+        min-width: 260px; /* Slightly smaller on mobile */
+    }
+    
+    /* Make hero text more readable on smaller screens */
+    .hero-text h1 {
+        font-size: 36px;
+    }
+    
+    .hero-text p {
+        font-size: 16px;
+    }
+    
+    /* Adjust counter size on mobile */
+    .counter {
+        font-size: 60px;
+    }
+    
+    .counter-container div {
+        font-size: 45px;
+    }
+    
+    .stats-text {
+        font-size: 20px;
+    }
 }
