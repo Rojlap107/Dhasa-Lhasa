@@ -418,7 +418,7 @@ nav.scrolled {
 }
 
 .contact-btn:hover {
-    background-color: var(--primary-red);
+    background-color: #25D366;
 }
 
 /* Floating Action Button */
@@ -464,38 +464,76 @@ nav.scrolled {
     display: block;
 }
 
+/* Updated FAB Menu for compact popup appearance */
 .fab-menu {
     position: fixed;
-    bottom: 90px;
-    right: 30px;
+    bottom: 120px; /* Position it just above the FAB button */
+    right: 30px; /* Align with the FAB button */
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
+    transform: scale(0.8) translateY(20px); /* Start smaller and below */
+    transform-origin: bottom right; /* Scale from bottom right corner */
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
     z-index: 99;
+    width: auto; /* Auto width based on content */
+    min-width: 180px; /* Minimum width */
+    max-width: 220px; /* Maximum width */
 }
 
 .fab-menu.active {
     opacity: 1;
     visibility: visible;
+    transform: scale(1) translateY(0); /* Expand to normal size */
 }
 
+/* Update fab items to be more compact */
 .fab-item {
-    width: auto;
+    width: 100%;
     padding: 10px 15px;
     border-radius: 8px;
-    background-color: white;
+    background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     color: var(--primary-blue);
     text-decoration: none;
     font-weight: 500;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.2s, color 0.2s;
     white-space: nowrap;
+    font-size: 14px;
+}
+
+/* Style Instagram option */
+.fab-item:first-child:hover {
+    background-color: #E1306C; /* Instagram gradient color */
+    color: white;
+}
+
+/* Style WhatsApp option */
+.fab-item:last-child:hover {
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+}
+
+/* Triangle pointer at the bottom */
+.fab-menu::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 23px; /* Align with the center of the FAB button */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid white; /* Triangle pointing down */
 }
 
 .fab-item:hover {
@@ -572,3 +610,34 @@ footer {
         font-size: 20px;
     }
 }
+
+/* Adding custom background to desired sections */
+section:not(#home):not(.stats-section),
+.testimonials-section {
+    background-image: url('img/main-background.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    position: relative;
+}
+
+/* Add a semi-transparent overlay for better text readability */
+section:not(#home):not(.stats-section)::before,
+.testimonials-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85); /* White overlay with 85% opacity */
+    z-index: -1;
+}
+
+/* Contact section with layered backgrounds */
+.contact-section {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.5); /* 50% opacity white background */
+    z-index: 1;
+}
+
