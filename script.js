@@ -35,15 +35,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // FAB Toggle
-    const fab = document.querySelector('.fab');
-    const fabMenu = document.querySelector('.fab-menu');
-    const fabMenuOverlay = document.querySelector('.fab-menu-overlay');
+    // Updated FAB Toggle function
+const fab = document.querySelector('.fab');
+const fabIcon = document.querySelector('.fab-icon');
+const fabMenu = document.querySelector('.fab-menu');
+const fabMenuOverlay = document.querySelector('.fab-menu-overlay');
+
+// Modify the fab menu HTML structure when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear existing content
+    fabMenu.innerHTML = '';
     
-    function toggleFabMenu() {
-        fabMenu.classList.toggle('active');
-        fabMenuOverlay.classList.toggle('active');
+    // Add Instagram option
+    const instaLink = document.createElement('a');
+    instaLink.href = 'https://www.instagram.com/dhasa.lhasa/';
+    instaLink.target = '_blank';
+    instaLink.className = 'fab-item';
+    instaLink.textContent = 'DM on Instagram';
+    fabMenu.appendChild(instaLink);
+    
+    // Add WhatsApp option
+    const waLink = document.createElement('a');
+    waLink.href = 'https://wa.me/919015174146?text=Hello%2C%20I%27m%20interested%20in%20booking%20a%20stay%20with%20Dhasa%20Lhasa.%20Could%20you%20please%20provide%20more%20information%3F';
+    waLink.target = '_blank';
+    waLink.className = 'fab-item';
+    waLink.textContent = 'Write us on WhatsApp';
+    fabMenu.appendChild(waLink);
+});
+
+function toggleFabMenu() {
+    fabMenu.classList.toggle('active');
+    fabMenuOverlay.classList.toggle('active');
+    
+    // Toggle between the two images
+    if (fabMenu.classList.contains('active')) {
+        fabIcon.src = 'img/sub-menu-down.png'; // Change to the down-pointing image
+    } else {
+        fabIcon.src = 'img/sub-menu.png'; // Change back to the original image
     }
+}
+
+fab.addEventListener('click', toggleFabMenu);
+
+// Close menu when clicking outside
+fabMenuOverlay.addEventListener('click', toggleFabMenu);
     
     fab.addEventListener('click', toggleFabMenu);
     
@@ -363,5 +398,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 100);
         });
+        // Update the FAB Toggle function in script.js
+const fab = document.querySelector('.fab');
+const fabIcon = document.querySelector('.fab-icon');
+const fabMenu = document.querySelector('.fab-menu');
+const fabMenuOverlay = document.querySelector('.fab-menu-overlay');
+
+function toggleFabMenu() {
+    fabMenu.classList.toggle('active');
+    fabMenuOverlay.classList.toggle('active');
+    
+    // Toggle between the two images
+    if (fabMenu.classList.contains('active')) {
+        fabIcon.src = 'img/sub-menu-down.png'; // Change to the down-pointing image
+    } else {
+        fabIcon.src = 'img/sub-menu.png'; // Change back to the original image
+    }
+}
+
+fab.addEventListener('click', toggleFabMenu);
+
+// Close menu when clicking outside
+fabMenuOverlay.addEventListener('click', toggleFabMenu);
     }
 });
