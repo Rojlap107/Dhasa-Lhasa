@@ -1,4 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Logo fade effect on scroll
+    const logo = document.querySelector('.logo');
+    const logoLink = document.querySelector('.logo-link');
+
+    // Get the navigation element
+    const nav = document.querySelector('nav');
+
+    // Function to handle scroll effects (logo visibility and nav background)
+    function handleScrollEffects() {
+        // Start effects after scrolling 100px
+        if (window.scrollY > 100) {
+            // Fade out the logo
+            logo.classList.add('fade-out');
+            logoLink.classList.add('fade-out');
+
+            // Add background to nav
+            nav.classList.add('scrolled');
+        } else {
+            // Fade in the logo
+            logo.classList.remove('fade-out');
+            logoLink.classList.remove('fade-out');
+
+            // Remove background from nav
+            nav.classList.remove('scrolled');
+        }
+    }
+
+    // Listen for scroll events
+    window.addEventListener('scroll', handleScrollEffects);
+
+    // Call once on page load to set initial state
+    handleScrollEffects();
+
     // Menu Toggle
     const menuBtn = document.querySelector('.menu-btn');
     const menu = document.querySelector('.menu');
@@ -35,65 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Updated FAB Toggle function
-const fab = document.querySelector('.fab');
-const fabIcon = document.querySelector('.fab-icon');
-const fabMenu = document.querySelector('.fab-menu');
-const fabMenuOverlay = document.querySelector('.fab-menu-overlay');
-
-// Modify the fab menu HTML structure when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Clear existing content
-    fabMenu.innerHTML = '';
-    
-    // Add Instagram option
-    const instaLink = document.createElement('a');
-    instaLink.href = 'https://www.instagram.com/dhasa.lhasa/';
-    instaLink.target = '_blank';
-    instaLink.className = 'fab-item';
-    instaLink.textContent = 'DM on Instagram';
-    fabMenu.appendChild(instaLink);
-    
-    // Add WhatsApp option
-    const waLink = document.createElement('a');
-    waLink.href = 'https://wa.me/919015174146?text=Hello%2C%20I%27m%20interested%20in%20booking%20a%20stay%20with%20Dhasa%20Lhasa.%20Could%20you%20please%20provide%20more%20information%3F';
-    waLink.target = '_blank';
-    waLink.className = 'fab-item';
-    waLink.textContent = 'Write us on WhatsApp';
-    fabMenu.appendChild(waLink);
-});
-
-function toggleFabMenu() {
-    fabMenu.classList.toggle('active');
-    fabMenuOverlay.classList.toggle('active');
-    
-    // Toggle between the two images
-    if (fabMenu.classList.contains('active')) {
-        fabIcon.src = 'img/sub-menu-down.png'; // Change to the down-pointing image
-    } else {
-        fabIcon.src = 'img/sub-menu.png'; // Change back to the original image
-    }
-}
-
-fab.addEventListener('click', toggleFabMenu);
-
-// Close menu when clicking outside
-fabMenuOverlay.addEventListener('click', toggleFabMenu);
-    
-    fab.addEventListener('click', toggleFabMenu);
-    
-    // Close menu when clicking outside
-    fabMenuOverlay.addEventListener('click', toggleFabMenu);
-    
-    // Update Instagram link in fab menu
-    const instagramLink = document.querySelector('.fab-menu a:first-child');
-    if (instagramLink) {
-        instagramLink.href = 'https://www.instagram.com/dhasa.lhasa/';
-    }
+    // FAB is now a direct link to Instagram - no JavaScript needed
     
     // Counter Animation
     const counter = document.getElementById('counter');
-    const target = 130;
+    const target = 140;
     let count = 0;
     let counterStarted = false; // Flag to prevent the counter from being triggered multiple times
     
@@ -398,27 +377,5 @@ fabMenuOverlay.addEventListener('click', toggleFabMenu);
                 }
             }, 100);
         });
-        // Update the FAB Toggle function in script.js
-const fab = document.querySelector('.fab');
-const fabIcon = document.querySelector('.fab-icon');
-const fabMenu = document.querySelector('.fab-menu');
-const fabMenuOverlay = document.querySelector('.fab-menu-overlay');
-
-function toggleFabMenu() {
-    fabMenu.classList.toggle('active');
-    fabMenuOverlay.classList.toggle('active');
-    
-    // Toggle between the two images
-    if (fabMenu.classList.contains('active')) {
-        fabIcon.src = 'img/sub-menu-down.png'; // Change to the down-pointing image
-    } else {
-        fabIcon.src = 'img/sub-menu.png'; // Change back to the original image
-    }
-}
-
-fab.addEventListener('click', toggleFabMenu);
-
-// Close menu when clicking outside
-fabMenuOverlay.addEventListener('click', toggleFabMenu);
     }
 });
