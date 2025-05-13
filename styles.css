@@ -79,12 +79,12 @@ nav {
 }
 
 nav.scrolled {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: transparent;
     padding: 10px 5%;
 }
 
 .logo {
-    width: 180px;
+    width: 250px;
     height: auto;
     transition: opacity 0.5s ease;
 }
@@ -457,7 +457,7 @@ nav.scrolled {
 }
 
 .fab-icon {
-    width: 140px;
+    width: 200px;
     height: auto;
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
 }

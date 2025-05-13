@@ -6,23 +6,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get the navigation element
     const nav = document.querySelector('nav');
 
-    // Function to handle scroll effects (logo visibility and nav background)
+    // Function to handle scroll effects (logo visibility only, keep nav transparent)
     function handleScrollEffects() {
         // Start effects after scrolling 100px
         if (window.scrollY > 100) {
             // Fade out the logo
             logo.classList.add('fade-out');
             logoLink.classList.add('fade-out');
-
-            // Add background to nav
-            nav.classList.add('scrolled');
+            
+            // Keep nav transparent (no background change)
         } else {
             // Fade in the logo
             logo.classList.remove('fade-out');
             logoLink.classList.remove('fade-out');
-
-            // Remove background from nav
-            nav.classList.remove('scrolled');
+            
+            // Keep nav transparent (no background change)
         }
     }
 
